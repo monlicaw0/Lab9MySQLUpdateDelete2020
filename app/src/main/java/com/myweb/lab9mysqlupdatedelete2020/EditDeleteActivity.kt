@@ -50,5 +50,29 @@ class EditDeleteActivity : AppCompatActivity() {
     }
 
     fun deleteStudent(v: View) {
+        val myBuilder = AlertDialog.Builder(this)
+        myBuilder.apply {
+            setTitle("Warning Message")
+            setMessage("Do you want to delete the student?")
+            setNegativeButton("Yes") { dialog, which ->
+                createClient.deleteStudent(edt_id.text.toString())
+                    .enqueue(object : Callback<Student> {
+                        override fun onResponse(call: Call<Student>, response: Response<Student>) {
+                            if (response.isSuccessful) {
+                                Toast.makeText(applicationContext, "Seccessfully Deleted",
+                                    Toast.LENGTH_LONG).show()
+                                finish()
+                            } else {
+                                Toast.makeText( applicationContext, " Delete Failure",
+                                    Toast.LENGTH_LONG ).show()
+                            }
+                        }
+                        override fun onFailure(call: Call<Student>, t: Throwable) =
+                            t.printStackTrace()
+                    })
+            }
+            setPositiveButton("No") { dialog, which ->  dialog.cancel() }
+            show()
+        }
     }
 }
